@@ -1,5 +1,6 @@
 package tng;
 
+import process.Spawner;
 import ast.Parser;
 
 public class Main
@@ -20,8 +21,11 @@ public class Main
 					Resources.branch = args[2];
 					Resources.configFile = args[3];
 					
-					Parser parser = new Parser(Resources.configFile);
-					parser.parseFile("/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/db/hibernate/EnumUserType.java");
+					//Parser parser = new Parser(Resources.configFile);
+					//parser.parseFile("/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/db/hibernate/EnumUserType.java");
+					
+					Spawner sp = new Spawner("/home");
+					sp.spawnProcess("ls");
 					
 				} 
 				catch (Exception e) {
