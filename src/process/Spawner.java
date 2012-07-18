@@ -14,6 +14,10 @@ public class Spawner
 		
 	}
 	
+	/**
+	 * Set the working directory of processes spawned.
+	 * @param wd
+	 */
 	public Spawner(String wd) {
 		workingDirectory = new File(wd);
 	}
@@ -24,7 +28,7 @@ public class Spawner
 	 * @param command
 	 * @return
 	 */
-	public String spawnProcess(String command) {
+	public String spawnProcess(String[] command) {
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.directory(workingDirectory);
 		processBuilder.redirectErrorStream(true);
