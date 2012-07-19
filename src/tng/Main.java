@@ -1,5 +1,7 @@
 package tng;
 
+import git.GitController;
+
 import java.util.List;
 
 import diff.UnifiedDiffParser;
@@ -29,13 +31,8 @@ public class Main
 					//Parser parser = new Parser(Resources.configFile);
 					//parser.parseFile("/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/db/hibernate/EnumUserType.java");
 					
-					Spawner sp = new Spawner("/home/jordan/Documents/callgraphanalyzer");
-					String output = sp.spawnProcess(new String[] {"git", "diff"});
-					
-					UnifiedDiffParser udp = new UnifiedDiffParser(output);
-					udp.parse();
-					
-					
+					GitController gc = new GitController();
+					gc.getAllCommits();
 				} 
 				catch (Exception e) {
 					e.printStackTrace();

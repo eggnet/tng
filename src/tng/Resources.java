@@ -20,4 +20,7 @@ public class Resources
 	public static final String diffHunkRange = 	"@@.*@@.*";
 	public static final String diffOldRange = 	"-[0-9]+,?[0-9]*";
 	public static final String diffNewRange = 	"\\+[0-9]+,?[0-9]*";
+	
+	// Git log regex
+	public static final String gitLogCommit = "commit [a-z0-9]+";
 }
