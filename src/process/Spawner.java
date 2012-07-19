@@ -30,7 +30,7 @@ public class Spawner
 	 * @param command
 	 * @return
 	 */
-	public List<String> spawnProcess(String[] command) {
+	public String spawnProcess(String[] command) {
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.directory(workingDirectory);
 		processBuilder.redirectErrorStream(true);
@@ -47,11 +47,11 @@ public class Spawner
 		BufferedReader br = new BufferedReader(isr);
 		
 		String line;
-		List<String> output = new ArrayList<String>();
+		String output = "";
 		
 		try {
 			while ((line = br.readLine()) != null) {
-				output.add(line);
+				output += line + System.getProperty("line.separator");
 			}
 		}
 		catch(Exception e) {

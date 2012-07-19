@@ -13,4 +13,11 @@ public class Resources
 	
 	// Encoding to use
 	public static final String encoding = "UTF-8";
+	
+	// Diff regex
+	public static final String diffOldFile = 	"^---.*";
+	public static final String diffNewFile = 	"^\\+\\+\\+.*";
+	public static final String diffHunkRange = 	"@@.*@@.*";
+	public static final String diffOldRange = 	"-[0-9]+,?[0-9]*";
+	public static final String diffNewRange = 	"\\+[0-9]+,?[0-9]*";
 }
