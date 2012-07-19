@@ -2,6 +2,7 @@ package tng;
 
 public class Resources
 {
+	// Command line arguments
 	public static String dbName;
 	public static String repository;
 	public static String branch;
@@ -23,4 +24,7 @@ public class Resources
 	
 	// Git log regex
 	public static final String gitLogCommit = "commit [a-z0-9]+";
+	
+	// Database
+	public static final String eggnetDB = "eggnet";
 }

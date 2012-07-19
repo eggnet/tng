@@ -1,14 +1,8 @@
 package tng;
 
-import git.GitController;
+import db.DatabaseConnector;
+import ast.CallGraphGenerator;
 
-import java.util.List;
-
-import diff.UnifiedDiffParser;
-import difflib.DiffUtils;
-import difflib.Patch;
-import process.Spawner;
-import ast.Parser;
 
 public class Main
 {
@@ -28,11 +22,15 @@ public class Main
 					Resources.branch = args[2];
 					Resources.configFile = args[3];
 					
-					//Parser parser = new Parser(Resources.configFile);
-					//parser.parseFile("/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/db/hibernate/EnumUserType.java");
+					DatabaseConnector db = new DatabaseConnector();
+					db.connect(Resources.eggnetDB);
+					db.createDatabase("tng");
 					
-					GitController gc = new GitController();
-					gc.getAllCommits();
+					CallGraphGenerator cgg = new CallGraphGenerator(db);
+					cgg.createCallGraphAtCommit("84c7bea004e6f5f0ed523ef731963b649a26868e");
+					
+					// Close the db
+					db.close();
 				} 
 				catch (Exception e) {
 					e.printStackTrace();

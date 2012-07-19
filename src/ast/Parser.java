@@ -17,6 +17,8 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import db.DatabaseConnector;
+
 import tng.Resources;
 
 public class Parser
@@ -78,7 +80,7 @@ public class Parser
 	 * Parsers a given file using the ASTParser.
 	 * @param file
 	 */
-	public void parseFile(String file) {
+	public void parseFile(String file, DatabaseConnector db) {
 		// Create parse for JRE 1.0 - 1.6
 		ASTParser parser= ASTParser.newParser(AST.JLS3);
 
@@ -109,7 +111,7 @@ public class Parser
 
 		
 		// Visit the syntax tree
-		Visitor visitor = new Visitor();
+		Visitor visitor = new Visitor(unitName, db);
 		unit.accept(visitor);
 	}
 	

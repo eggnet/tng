@@ -1,37 +1,57 @@
 package ast;
 
+import java.util.Stack;
+
+import models.Method;
+
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
+
+import db.DatabaseConnector;
 
 public class Visitor extends ASTVisitor {
 	
-	public Visitor() {
-		
+	private Stack<Integer> methodStack;
+	private String file;
+	DatabaseConnector db;
+	
+	public Visitor(String file, DatabaseConnector db) {
+		methodStack = new Stack<Integer>();
+		this.file = file;
+		this.db = db;
 	}
 	
 	/**
-	 * This function overrides what to do when the AST visitor 
-	 * encounters a package declaration
+	 * This function overrides what to do when we reach
+	 * a method declaration.
 	 */
 	@Override
-	public boolean visit(PackageDeclaration node) {
-		System.out.println("Package declaration");
+	public boolean visit(MethodDeclaration node) {
+		// Insert the method into the DB
+		IMethodBinding methodBinding = node.resolveBinding();
+		Method method = createMethodFromBinding(node, methodBinding);
+		
+		// Insert
+		int id = db.upsertMethod(method);
+		
+		// Push onto stack
+		if(id != -1)
+			methodStack.push(id);
 		
 		return super.visit(node);
 	}
 	
 	/**
 	 * This function overrides what to do when we reach
-	 * a method declaration inside a class.
+	 * the end of a method declaration.
 	 */
 	@Override
-	public boolean visit(MethodDeclaration node) {
-		System.out.println("Method declaration");
-		
-		return super.visit(node);
+	public void endVisit(MethodDeclaration node) {
+		methodStack.pop();
 	}
 	
 	/**
@@ -40,15 +60,47 @@ public class Visitor extends ASTVisitor {
 	 */
 	@Override
 	public boolean visit(MethodInvocation node) {
-		System.out.println("Method invocation: " + node.toString());
+		// Insert the method into the DB
+		IMethodBinding methodBinding = node.resolveMethodBinding();
+		Method method = createMethodFromBinding(null, methodBinding);
 		
-		IMethodBinding binding = node.resolveMethodBinding();
-		
-		if(binding != null) {
-			System.out.println(binding.toString());
-			System.out.println("Declaring class: " + binding.getDeclaringClass().getQualifiedName());
-		}
+		// Add method call
 		
 		return super.visit(node);
+	}
+	
+	private Method createMethodFromBinding(MethodDeclaration node, IMethodBinding methodBinding) {
+		if(methodBinding != null) {
+			Method method = new Method();
+			method.setName(methodBinding.getName());
+			method.setFile(file);
+			if(node != null) {
+				method.setStart(node.getStartPosition());
+				method.setEnd(node.getStartPosition() + node.getLength());
+			}
+			
+			// Parameters
+			/*ITypeBinding[] parameters = methodBinding.getParameterTypes();
+			if(parameters.length > 0) {
+				for(int i = 0; i < parameters.length; i++) {
+					if(parameters[i] != null)
+						method.addParameter(parameters[i].getQualifiedName());
+				}
+			}*/
+			
+			// Class and Package
+			ITypeBinding clazz = methodBinding.getDeclaringClass();
+			if(clazz != null) {
+				method.setClazz(clazz.getName());
+				
+				IPackageBinding pkg = clazz.getPackage();
+				if(pkg != null)
+					method.setPkg(pkg.getName());
+			}
+			
+			return method;
+		}
+		else
+			return null;
 	}
 }
