@@ -1,5 +1,9 @@
 package tng;
 
+import java.util.List;
+
+import difflib.DiffUtils;
+import difflib.Patch;
 import process.Spawner;
 import ast.Parser;
 
@@ -25,7 +29,10 @@ public class Main
 					//parser.parseFile("/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/db/hibernate/EnumUserType.java");
 					
 					Spawner sp = new Spawner("/home/jordan/Documents/callgraphanalyzer");
-					sp.spawnProcess(new String[] {"git", "diff"});
+					List<String> output = sp.spawnProcess(new String[] {"git", "diff"});
+					
+					Patch patch = DiffUtils.parseUnifiedDiff(output);
+					System.out.println("");
 					
 				} 
 				catch (Exception e) {

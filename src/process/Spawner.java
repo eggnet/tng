@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Spawner
 {
@@ -28,7 +30,7 @@ public class Spawner
 	 * @param command
 	 * @return
 	 */
-	public String spawnProcess(String[] command) {
+	public List<String> spawnProcess(String[] command) {
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.directory(workingDirectory);
 		processBuilder.redirectErrorStream(true);
@@ -45,11 +47,11 @@ public class Spawner
 		BufferedReader br = new BufferedReader(isr);
 		
 		String line;
-		String output = "";
+		List<String> output = new ArrayList<String>();
 		
 		try {
 			while ((line = br.readLine()) != null) {
-				output += line + "\n";
+				output.add(line);
 			}
 		}
 		catch(Exception e) {
