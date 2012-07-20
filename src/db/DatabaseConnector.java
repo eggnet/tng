@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import models.Method;
 
 import db.util.ISetter;
+import db.util.ISetter.IntSetter;
 import db.util.PreparedStatementExecutionItem;
 import db.util.ISetter.StringSetter;
 
@@ -38,7 +39,17 @@ public class DatabaseConnector extends DbConnection
 		}
 	}
 	
-	public int upsertMethod(Method method) {
+	/**
+	 * This method inserts a method into the methods table. If the method already
+	 * exists then it will update the start and end line numbers.
+	 * @param method
+	 * @return
+	 */
+	public int insertMethod(Method method) {
+		int id = getMethodID(method);
+		if(id != -1)
+			return updateMethodLines(method, id);
+		
 		// Set up parameters
 		String parameters = "{";
 		if(!method.getParameters().isEmpty()) {
@@ -66,6 +77,32 @@ public class DatabaseConnector extends DbConnection
 	}
 	
 	/**
+	 * This method will update the start and end line numbers of
+	 * a given method inside the methods table.
+	 * @param method
+	 * @param id
+	 * @return
+	 */
+	private int updateMethodLines(Method method, int id) {
+		if(method.getStart() != -1 && method.getEnd() != -1 &&
+				method.getFile() != null){
+			String query = "UPDATE methods SET file_name=?, start_line=?, end_line=? WHERE id=?";
+			ISetter[] params = {
+				new StringSetter(1,method.getFile()),
+				new IntSetter(2,method.getStart()),
+				new IntSetter(3,method.getEnd()),
+				new IntSetter(4,id)
+			};
+			
+			PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
+			addExecutionItem(ei);
+			ei.waitUntilExecuted();
+		}
+		
+		return id;
+	}
+	
+	/**
 	 * Get Sequence Id for a sequence table
 	 * @param sequence
 	 * @return sequence id, -1 of none found or there is exception
@@ -89,5 +126,62 @@ public class DatabaseConnector extends DbConnection
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	/**
+	 * This method checks for a pre-existing method and returns its ID if
+	 * it does exist. Returns -1 if DNE.
+	 * @param method
+	 * @return
+	 */
+	public int getMethodID(Method method) {
+		try {
+			// Set up parameters
+			String parameters = "{";
+			if(!method.getParameters().isEmpty()) {
+				for(String param: method.getParameters()) {
+					parameters += "\"" + param + "\", ";
+				}
+				parameters = parameters.substring(0, parameters.length()-2);
+			}
+			parameters += "}";
+
+			String query = "SELECT id FROM methods WHERE package_name=? AND" +
+					" class_type=? AND method_name=? AND parameters=\'" + parameters + "\'";
+			ISetter[] params = {
+					new StringSetter(1,method.getPkg()),
+					new StringSetter(2,method.getClazz()),
+					new StringSetter(3,method.getName())
+			};
+
+			PreparedStatementExecutionItem eifirst = new PreparedStatementExecutionItem(query, params);
+			addExecutionItem(eifirst);
+			eifirst.waitUntilExecuted();
+			ResultSet rs = eifirst.getResult();
+
+			if(rs.next())
+				return rs.getInt("id");
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	/**
+	 * This inserts a new record into the invokes table.
+	 * @param caller
+	 * @param callee
+	 */
+	public void insertInvokes(int caller, int callee) {
+		String query = "INSERT INTO invokes (caller, callee, id) VALUES " +
+				"(?, ?, default)";
+		ISetter[] params = {
+				new IntSetter(1,caller),
+				new IntSetter(2,callee)
+		};
+		
+		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
+		addExecutionItem(ei);
 	}
 }

@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="libs/diffutils-1.2.1.jar"/>
 	<classpathentry kind="lib" path="/libs/database/database.jar"/>
 	<classpathentry kind="lib" path="libs/postgresql-9.1-902.jdbc4.jar"/>
+	<classpathentry kind="src" path="/database"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

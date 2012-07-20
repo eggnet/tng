@@ -39,7 +39,7 @@ public class Visitor extends ASTVisitor {
 		Method method = createMethodFromBinding(node, methodBinding);
 		
 		// Insert
-		int id = db.upsertMethod(method);
+		int id = db.insertMethod(method);
 		
 		// Push onto stack
 		if(id != -1)
@@ -67,6 +67,13 @@ public class Visitor extends ASTVisitor {
 		IMethodBinding methodBinding = node.resolveMethodBinding();
 		Method method = createMethodFromBinding(null, methodBinding);
 		
+		// Insert
+		if(method != null) {
+			int id = db.insertMethod(method);
+			if(!methodStack.isEmpty())
+				db.insertInvokes(methodStack.peek(), id);
+		}
+		
 		// Add method call
 		
 		return super.visit(node);
@@ -76,8 +83,8 @@ public class Visitor extends ASTVisitor {
 		if(methodBinding != null) {
 			Method method = new Method();
 			method.setName(methodBinding.getName());
-			method.setFile(file);
 			if(node != null) {
+				method.setFile(file);
 				method.setStart(cu.getLineNumber(node.getStartPosition()));
 				method.setEnd(cu.getLineNumber(node.getStartPosition() + node.getLength()));
 			}

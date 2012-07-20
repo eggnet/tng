@@ -10,8 +10,8 @@ public class Method
 	private String 			clazz;
 	private String 			name;
 	private List<String> 	parameters;
-	private int 			start;
-	private int 			end;
+	private int 			start = -1;
+	private int 			end = -1;
 	
 	private int				id;
 	

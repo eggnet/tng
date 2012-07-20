@@ -52,11 +52,22 @@ CREATE TABLE methods (
 
 ALTER SEQUENCE method_id_seq OWNED BY methods.id;
 
+------------
+
+CREATE SEQUENCE invokes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 CREATE TABLE invokes (
     caller integer NOT NULL,
     callee integer NOT NULL,
-    PRIMARY KEY(caller, callee)
+    id integer NOT NULL PRIMARY KEY DEFAULT NEXTVAL('invokes_id_seq'::regclass)
 );
+
+ALTER SEQUENCE invokes_id_seq OWNED BY invokes.id;
 
 CREATE TABLE properties (
     repository character varying(255),
