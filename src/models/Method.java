@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Method
@@ -15,7 +16,7 @@ public class Method
 	private int				id;
 	
 	public Method() {
-		
+		parameters = new ArrayList<String>();
 	}
 
 	public Method(String file, String pkg, String clazz, String name,

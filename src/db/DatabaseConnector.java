@@ -39,15 +39,26 @@ public class DatabaseConnector extends DbConnection
 	}
 	
 	public int upsertMethod(Method method) {
+		// Set up parameters
+		String parameters = "{";
+		if(!method.getParameters().isEmpty()) {
+			for(String param: method.getParameters()) {
+				parameters += "\"" + param + "\", ";
+			}
+			parameters = parameters.substring(0, parameters.length()-2);
+		}
+		parameters += "}";
+		
 		String query = "INSERT INTO methods (file_name, package_name, class_type, method_name, " +
-				"start_line, end_line, id) VALUES " +
-				"(?, ?, ?, ?, " + method.getStart() + ", " + method.getEnd() + ", default)";
+				"parameters, start_line, end_line, id) VALUES " +
+				"(?, ?, ?, ?, \'" + parameters + "\', " + method.getStart() + ", " + method.getEnd() + ", default)";
 		ISetter[] params = {
 				new StringSetter(1,method.getFile()),
 				new StringSetter(2,method.getPkg()),
 				new StringSetter(3,method.getClazz()),
 				new StringSetter(4,method.getName())
 		};
+		
 		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
 		addExecutionItem(ei);
 		ei.waitUntilExecuted();

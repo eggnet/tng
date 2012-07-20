@@ -83,13 +83,13 @@ public class Visitor extends ASTVisitor {
 			}
 			
 			// Parameters
-			/*ITypeBinding[] parameters = methodBinding.getParameterTypes();
+			ITypeBinding[] parameters = methodBinding.getParameterTypes();
 			if(parameters.length > 0) {
 				for(int i = 0; i < parameters.length; i++) {
 					if(parameters[i] != null)
 						method.addParameter(parameters[i].getQualifiedName());
 				}
-			}*/
+			}
 			
 			// Class and Package
 			ITypeBinding clazz = methodBinding.getDeclaringClass();
