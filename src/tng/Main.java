@@ -1,5 +1,6 @@
 package tng;
 
+import git.GitController;
 import db.DatabaseConnector;
 import ast.CallGraphGenerator;
 
@@ -22,15 +23,18 @@ public class Main
 					Resources.branch = args[2];
 					Resources.configFile = args[3];
 					
-					DatabaseConnector db = new DatabaseConnector();
-					db.connect(Resources.eggnetDB);
-					db.createDatabase("tng");
+					//DatabaseConnector db = new DatabaseConnector();
+					//db.connect(Resources.eggnetDB);
+					//db.createDatabase("tng");
 					
-					CallGraphGenerator cgg = new CallGraphGenerator(db);
-					cgg.createCallGraphAtCommit("84c7bea004e6f5f0ed523ef731963b649a26868e");
+					//CallGraphGenerator cgg = new CallGraphGenerator(db);
+					//cgg.createCallGraphAtCommit("84c7bea004e6f5f0ed523ef731963b649a26868e");
+					
+					GitController gc = new GitController();
+					System.out.println(gc.getOwnersOfFileRange("src/fi/hut/soberit/agilefant/model/Story.java", 1, 10));
 					
 					// Close the db
-					db.close();
+					//db.close();
 				} 
 				catch (Exception e) {
 					e.printStackTrace();

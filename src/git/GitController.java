@@ -2,6 +2,10 @@ package git;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import models.Owner;
 
 import process.Spawner;
 import tng.Resources;
@@ -59,5 +63,36 @@ public class GitController
 	
 	public String getAuthorOfCommit(String commit) {
 		return spawner.spawnProcess(new String[] {"git", "show", "-s", "--format=%ce", commit});
+	}
+	
+	public List<Owner> getOwnersOfFileRange(String file, int start, int end) {
+		List<Owner> owners = new ArrayList<Owner>();
+		
+		String output = spawner.spawnProcess(new String[] {"git", "blame", "-e", "-L"+start+","+end, file});
+		String[] lines = output.split(System.getProperty("line.separator"));
+		
+		for(int i = 0; i < lines.length; i++) {
+			Pattern pattern = Pattern.compile(Resources.gitBlame);
+			Matcher matcher = pattern.matcher(lines[i]);
+
+			if(matcher.find()) {
+				Owner owner = new Owner();
+				owner.setEmail(matcher.group(1));
+				owner.setOwnership(1/(end-start));
+				updateOwnersList(owners, owner);
+			}
+		}
+		
+		return owners;
+	}
+	
+	private void updateOwnersList(List<Owner> owners, Owner owner) {
+		for(Owner own: owners) {
+			if(own.getEmail().equals(owner.getEmail())) {
+				own.setOwnership(own.getOwnership()+owner.getOwnership());
+				return;
+			}
+		}
+		owners.add(owner);
 	}
 }
