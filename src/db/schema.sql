@@ -44,8 +44,8 @@ CREATE TABLE methods (
     package_name character varying(255),
     class_type character varying(255),
     method_name character varying(255),
-    start_char integer,
-    end_char integer,
+    start_line integer,
+    end_line integer,
     id integer NOT NULL PRIMARY KEY DEFAULT NEXTVAL('method_id_seq'::regclass)
 );
 

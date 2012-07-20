@@ -5,6 +5,7 @@ import java.util.Stack;
 import models.Method;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -17,12 +18,14 @@ public class Visitor extends ASTVisitor {
 	
 	private Stack<Integer> methodStack;
 	private String file;
+	CompilationUnit cu;
 	DatabaseConnector db;
 	
-	public Visitor(String file, DatabaseConnector db) {
+	public Visitor(String file, CompilationUnit cu, DatabaseConnector db) {
 		methodStack = new Stack<Integer>();
 		this.file = file;
 		this.db = db;
+		this.cu = cu;
 	}
 	
 	/**
@@ -75,8 +78,8 @@ public class Visitor extends ASTVisitor {
 			method.setName(methodBinding.getName());
 			method.setFile(file);
 			if(node != null) {
-				method.setStart(node.getStartPosition());
-				method.setEnd(node.getStartPosition() + node.getLength());
+				method.setStart(cu.getLineNumber(node.getStartPosition()));
+				method.setEnd(cu.getLineNumber(node.getStartPosition() + node.getLength()));
 			}
 			
 			// Parameters

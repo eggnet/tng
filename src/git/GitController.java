@@ -52,4 +52,8 @@ public class GitController
 			}
 		}
 	}
+	
+	public String getCommitDiff(String commit) {
+		return spawner.spawnProcess(new String[] {"git", "diff-tree", "-p", commit});
+	}
 }

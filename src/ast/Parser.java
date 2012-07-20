@@ -111,7 +111,7 @@ public class Parser
 
 		
 		// Visit the syntax tree
-		Visitor visitor = new Visitor(unitName, db);
+		Visitor visitor = new Visitor(unitName, unit, db);
 		unit.accept(visitor);
 	}
 	

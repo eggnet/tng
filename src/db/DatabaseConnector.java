@@ -40,7 +40,7 @@ public class DatabaseConnector extends DbConnection
 	
 	public int upsertMethod(Method method) {
 		String query = "INSERT INTO methods (file_name, package_name, class_type, method_name, " +
-				"start_char, end_char, id) VALUES " +
+				"start_line, end_line, id) VALUES " +
 				"(?, ?, ?, ?, " + method.getStart() + ", " + method.getEnd() + ", default)";
 		ISetter[] params = {
 				new StringSetter(1,method.getFile()),
