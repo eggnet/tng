@@ -6,13 +6,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Edge;
 import models.Method;
+import models.Network;
+import models.Node;
 import models.Pair;
 
 import db.util.ISetter;
 import db.util.ISetter.IntSetter;
 import db.util.PreparedStatementExecutionItem;
 import db.util.ISetter.StringSetter;
+import db.util.ISetter.FloatSetter;
 
 public class DatabaseConnector extends DbConnection
 {	
@@ -302,5 +306,85 @@ public class DatabaseConnector extends DbConnection
 		}
 		
 		return callers;
+	}
+	
+	public void exportNetwork(Network network) {
+		int networkID = insertNetwork(network);
+		
+	}
+	
+	/**
+	 * This created a new network in the DB.
+	 * @param network
+	 * @return
+	 */
+	private int insertNetwork(Network network) {
+		String query = "INSERT INTO networks (new_commit_id, old_commit_id, network_id) VALUES " +
+				"(?, ?, default)";
+		ISetter[] params = {
+				new StringSetter(1,network.getCommit()),
+				new StringSetter(2,network.getCommit())
+		};
+		
+		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
+		addExecutionItem(ei);
+		ei.waitUntilExecuted();
+		int id = getSequenceValue("networks_id_seq"); 
+		
+		for(Edge edge: network.getEdges()) {
+			insertEdge(edge, id);
+		}
+		
+		return id;
+	}
+	
+	private void insertEdge(Edge edge, int networkID) {
+		String source = insertNode(edge.getNode2(), networkID);
+		String target = insertNode(edge.getNode1(), networkID);
+		
+		String query = "INSERT INTO edges (source, target, weight, is_fuzzy, network_id)" +
+				" VALUES (?, ?, ?, 'false', ?)";
+		ISetter[] params = {
+				new StringSetter(1,source),
+				new StringSetter(2,target),
+				new FloatSetter(3,edge.getWeight()),
+				new IntSetter(4,networkID)
+		};
+
+		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
+		addExecutionItem(ei);
+	}
+	
+	private String insertNode(Node node, int networkID) {
+		try {
+			String query = "SELECT id FROM nodes WHERE id=?";
+			ISetter[] params = {
+					new StringSetter(1,node.getEmail())
+			};
+
+			PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
+			addExecutionItem(ei);
+			ei.waitUntilExecuted();
+			ResultSet rs = ei.getResult();
+			if(rs.next())
+				return rs.getString("id");
+			else {
+				query = "INSERT INTO nodes (id, network_id) VALUES " +
+						"(?, ?)";
+				ISetter[] params2 = {
+						new StringSetter(1,node.getEmail()),
+						new IntSetter(2,networkID)
+				};
+
+				ei = new PreparedStatementExecutionItem(query, params2);
+				addExecutionItem(ei);
+				ei.waitUntilExecuted();
+				return node.getEmail();
+			}
+		}
+		catch(Exception e) {
+			
+		}
+		return null;
 	}
 }
