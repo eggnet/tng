@@ -7,6 +7,7 @@ public class Resources
 	public static String repository;
 	public static String branch;
 	public static String configFile;
+	public static String repositoryName;
 	
 	// Config file constants
 	public static final String classpath = "--ClassFolders";

@@ -67,7 +67,15 @@ CREATE TABLE invokes (
     id integer NOT NULL PRIMARY KEY DEFAULT NEXTVAL('invokes_id_seq'::regclass)
 );
 
+ALTER SEQUENCE invokes_id_seq OWNED BY invokes.id;
+
+---------------
+
 CREATE TABLE properties (
     repository character varying(255),
     commit_id character varying(255)
 );
+
+------------
+
+

@@ -3,8 +3,11 @@ package db;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import models.Method;
+import models.Pair;
 
 import db.util.ISetter;
 import db.util.ISetter.IntSetter;
@@ -183,5 +186,126 @@ public class DatabaseConnector extends DbConnection
 		
 		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
 		addExecutionItem(ei);
+	}
+	
+	/**
+	 * This method removes all information to deal with
+	 * the current call graph in the database.
+	 */
+	public void deleteCallGraph() {
+		String query = "DELETE FROM invokes";
+		ISetter[] params = {};
+		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
+		addExecutionItem(ei);
+		ei.waitUntilExecuted();
+		
+		query = "DELETE FROM methods";
+		ei = new PreparedStatementExecutionItem(query, params);
+		addExecutionItem(ei);
+		ei.waitUntilExecuted();
+	}
+	
+	/**
+	 * This method will return all methods inside a given file that overlap
+	 * with the given start and end line numbers with a percent of overlap.
+	 * @param file
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<Pair<Method, Float>> getChangedMethods(String file, int start, int end) {
+		List<Pair<Method, Float>> changedMethods = new ArrayList<Pair<Method, Float>>();
+		
+		try 
+		{
+			// Get intersecting methods
+			String sql = "SELECT * FROM methods WHERE file_name=? AND start_line < ? AND ? < end_line"; 
+			
+			ISetter[] params = {
+					new StringSetter(1, file),
+					new IntSetter(2, end),
+					new IntSetter(3, start)
+			};
+			PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(sql, params);
+			addExecutionItem(ei);
+			ei.waitUntilExecuted();
+			ResultSet rs = ei.getResult();
+			while(rs.next()) {
+				// Create method with fake weight
+				Pair<Method, Float> pair = new Pair<Method, Float>(
+						new Method(rs.getString("file_name"), rs.getString("package_name"), rs.getString("class_type"),
+								rs.getString("method_name"), 
+								convertParametersToList((String[])rs.getArray("parameters").getArray()), 
+								rs.getInt("start_line"), rs.getInt("end_line"), rs.getInt("id")), 0.0f);
+				// Set real weight
+				if(start >= pair.getFirst().getStart() && end <= pair.getFirst().getEnd())
+					pair.setSecond(1.0f);
+				else if(pair.getFirst().getStart() <= start)
+					pair.setSecond((float)(pair.getFirst().getEnd() - start + 1) / 
+							(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
+				else
+					pair.setSecond((float)(end - pair.getFirst().getStart() + 1) / 
+							(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
+				
+				// Add new pair to list
+				changedMethods.add(pair);
+			}
+		}
+		catch(SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return changedMethods;
+	}
+	
+	/**
+	 * This method simply converts the parameters arrays from the methods
+	 * table to a usable list of strings.
+	 * @param parameters
+	 * @return
+	 */
+	private List<String> convertParametersToList(String[] parameters) {
+		List<String> params = new ArrayList<String>();
+		for(String param: parameters) {
+			params.add(param);
+		}
+		return params;
+	}
+	
+	/**
+	 * This function will return all methods that call a given method.
+	 * Note: the parameter method must have a valid ID.
+	 * @param method
+	 * @return
+	 */
+	public List<Method> getCallersOfMethod(Method method) {
+		List<Method> callers = new ArrayList<Method>();
+		
+		try 
+		{
+			// Get intersecting methods
+			String sql = "SELECT * FROM methods JOIN invokes ON (methods.id=invokes.caller)" +
+					" WHERE callee=?"; 
+			
+			ISetter[] params = {
+					new IntSetter(1, method.getId())
+			};
+			PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(sql, params);
+			addExecutionItem(ei);
+			ei.waitUntilExecuted();
+			ResultSet rs = ei.getResult();
+			while(rs.next()) {
+				callers.add(new Method(rs.getString("file_name"), rs.getString("package_name"), rs.getString("class_type"),
+						rs.getString("method_name"), 
+						convertParametersToList((String[])rs.getArray("parameters").getArray()), 
+						rs.getInt("start_line"), rs.getInt("end_line"), rs.getInt("id")));
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return callers;
 	}
 }

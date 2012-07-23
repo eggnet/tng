@@ -52,6 +52,8 @@ public class GitController
 		String[] lines = output.split(System.getProperty("line.separator"));
 		for(int i = 0; i < lines.length; i++) {
 			if(lines[i].endsWith(".java")) {
+				if(lines[i].startsWith("./"))
+					lines[i] = lines[i].replaceFirst("./", "");
 				files.add(lines[i]);
 			}
 		}
@@ -62,7 +64,8 @@ public class GitController
 	}
 	
 	public String getAuthorOfCommit(String commit) {
-		return spawner.spawnProcess(new String[] {"git", "show", "-s", "--format=%ce", commit});
+		return spawner.spawnProcess(new String[] {"git", "show", "-s", "--format=%ce", commit})
+				.replace("\n", "");
 	}
 	
 	public List<Owner> getOwnersOfFileRange(String file, int start, int end) {
@@ -78,7 +81,7 @@ public class GitController
 			if(matcher.find()) {
 				Owner owner = new Owner();
 				owner.setEmail(matcher.group(1));
-				owner.setOwnership(1/(end-start));
+				owner.setOwnership((float)1/(end-start+1));
 				updateOwnersList(owners, owner);
 			}
 		}

@@ -18,6 +18,10 @@ public class CallGraphGenerator
 		this.db = db;
 	}
 	
+	/**
+	 * Creates a new call graph in the database from scratch.
+	 * @param commitID
+	 */
 	public void createCallGraphAtCommit(String commitID) {
 		// Set the repo to the commit
 		gc.reset(commitID);

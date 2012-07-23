@@ -5,12 +5,16 @@ import java.util.Stack;
 import models.Method;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+
+import tng.Resources;
 
 import db.DatabaseConnector;
 
@@ -74,7 +78,25 @@ public class Visitor extends ASTVisitor {
 				db.insertInvokes(methodStack.peek(), id);
 		}
 		
-		// Add method call
+		return super.visit(node);
+	}
+	
+	/**
+	 * This function overrides what to do when we reach
+	 * a constructor invocation.
+	 */
+	@Override
+	public boolean visit(ClassInstanceCreation node) {
+		// Resolve the constructor
+		IMethodBinding methodBinding = node.resolveConstructorBinding();
+		Method method = createMethodFromBinding(null, methodBinding);
+		
+		// Insert
+		if(method != null) {
+			int id = db.insertMethod(method);
+			if(!methodStack.isEmpty())
+				db.insertInvokes(methodStack.peek(), id);
+		}
 		
 		return super.visit(node);
 	}
@@ -84,7 +106,11 @@ public class Visitor extends ASTVisitor {
 			Method method = new Method();
 			method.setName(methodBinding.getName());
 			if(node != null) {
-				method.setFile(file);
+				// Handle working directory
+				if(file.startsWith(Resources.repositoryName+"/"))
+					method.setFile(file.replaceFirst(Resources.repositoryName+"/", ""));
+				else
+					method.setFile(file);
 				method.setStart(cu.getLineNumber(node.getStartPosition()));
 				method.setEnd(cu.getLineNumber(node.getStartPosition() + node.getLength()));
 			}

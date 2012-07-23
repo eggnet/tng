@@ -129,4 +129,11 @@ public class Method
 	{
 		this.id = id;
 	}
+	
+	@Override
+	public String toString() {
+		String val = pkg + "." + clazz + "." + name + 
+				"(" + parameters.toString() + ")";
+		return val;
+	}
 }

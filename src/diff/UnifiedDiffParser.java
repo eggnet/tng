@@ -54,13 +54,22 @@ public class UnifiedDiffParser
 				changes.add(currentChangeset);
 			
 			currentChangeset = new Changeset();
-			currentChangeset.setOldFile(parseDiffOldFile(line));
+			String oldFile = parseDiffOldFile(line);
+			
+			if(oldFile.startsWith("a/"))
+				oldFile = oldFile.replaceFirst("a/", "");
+			
+			currentChangeset.setOldFile(oldFile);
 		}
 		else if(line.matches(Resources.diffNewFile)) {
 			if(currentChangeset == null)
 				currentChangeset = new Changeset();
 			
-			currentChangeset.setNewFile(parseDiffNewFile(line));
+			String newFile = parseDiffNewFile(line);
+			if(newFile.startsWith("b/"))
+				newFile = newFile.replaceFirst("b/", "");
+			
+			currentChangeset.setNewFile(newFile);
 		}
 		else if(line.matches(Resources.diffHunkRange)) {
 			Range range = parseDiffHunkRange(line);
