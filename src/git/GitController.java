@@ -60,7 +60,7 @@ public class GitController
 	}
 	
 	public String getCommitDiff(String commit) {
-		return spawner.spawnProcess(new String[] {"git", "diff-tree", "-p", commit});
+		return spawner.spawnProcess(new String[] {"git", "diff-tree", "--unified=0", commit});
 	}
 	
 	public String getAuthorOfCommit(String commit) {

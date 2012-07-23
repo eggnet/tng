@@ -59,8 +59,6 @@ public class NetworkBuilder
 		for(Pair<Method, Float> changedMethod: changedMethods) {
 			generateEdges(changedMethod, author);
 		}
-		
-		
 	}
 	
 	private void buildNetworkUpdate(String commit) {

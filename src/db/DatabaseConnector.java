@@ -239,7 +239,7 @@ public class DatabaseConnector extends DbConnection
 								rs.getInt("start_line"), rs.getInt("end_line"), rs.getInt("id")), 0.0f);
 				// Set real weight
 				if(start >= pair.getFirst().getStart() && end <= pair.getFirst().getEnd())
-					pair.setSecond(1.0f);
+					pair.setSecond((float)end-start+1/(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
 				else if(pair.getFirst().getStart() <= start)
 					pair.setSecond((float)(pair.getFirst().getEnd() - start + 1) / 
 							(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
