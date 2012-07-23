@@ -238,14 +238,9 @@ public class DatabaseConnector extends DbConnection
 								convertParametersToList((String[])rs.getArray("parameters").getArray()), 
 								rs.getInt("start_line"), rs.getInt("end_line"), rs.getInt("id")), 0.0f);
 				// Set real weight
-				if(start >= pair.getFirst().getStart() && end <= pair.getFirst().getEnd())
-					pair.setSecond((float)end-start+1/(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
-				else if(pair.getFirst().getStart() <= start)
-					pair.setSecond((float)(pair.getFirst().getEnd() - start + 1) / 
-							(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
-				else
-					pair.setSecond((float)(end - pair.getFirst().getStart() + 1) / 
-							(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
+				pair.setSecond((Math.min(end, pair.getFirst().getEnd()) - 
+						Math.max(start, pair.getFirst().getStart()) + 1)/
+						(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
 				
 				// Add new pair to list
 				changedMethods.add(pair);
