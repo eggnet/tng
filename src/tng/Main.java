@@ -34,7 +34,8 @@ public class Main
 					//db.createDatabase("tng");
 					
 					NetworkBuilder nb = new NetworkBuilder(db);
-					nb.buildNetwork("809d8a783abb0058875fbc1bff45bc08054a27ea", false);
+					nb.buildAllNetworksNoUpdate();
+					//nb.buildNetwork("809d8a783abb0058875fbc1bff45bc08054a27ea", false);
 					
 					db.close();
 				} 

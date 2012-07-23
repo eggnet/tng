@@ -98,4 +98,23 @@ public class GitController
 		}
 		owners.add(owner);
 	}
+	
+	/**
+	 * Returns the HEAD commit ID of the repository.
+	 * @return
+	 */
+	public String getHead() {
+		String output = spawner.spawnProcess(new String[] {"git", "show", "HEAD"});
+		String[] lines = output.split(System.getProperty("line.separator"));
+		
+		Pattern pattern = Pattern.compile(Resources.gitLogCommit);
+		Matcher matcher = pattern.matcher(lines[0]);
+		
+		if(matcher.find()) {
+			String[] split = lines[0].split(" ");
+			return split[1];
+		}
+		
+		return null;
+	}
 }

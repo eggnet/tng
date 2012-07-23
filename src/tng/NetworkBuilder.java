@@ -18,16 +18,29 @@ import diff.UnifiedDiffParser;
 
 public class NetworkBuilder
 {
-	DatabaseConnector 	db;
-	GitController 		gc;
-	UnifiedDiffParser 	udp;
-	CallGraphGenerator 	cgg;
+	private DatabaseConnector 	db;
+	private GitController 		gc;
+	private UnifiedDiffParser 	udp;
+	private CallGraphGenerator 	cgg;
+	
+	private String				HEAD;
 	
 	public NetworkBuilder(DatabaseConnector db) {
 		this.db = db;
 		gc = new GitController();
 		udp = new UnifiedDiffParser();
 		cgg = new CallGraphGenerator(db);
+		
+		HEAD = gc.getHead();
+	}
+	
+	public void buildAllNetworksNoUpdate() {
+		List<String> commits = gc.getAllCommits();
+		for(String commit: commits)
+			buildNetwork(commit, false);
+		
+		// Reset to head
+		gc.reset(HEAD);
 	}
 	
 	public void buildNetwork(String commit, boolean update) {
@@ -36,7 +49,6 @@ public class NetworkBuilder
 			buildNetworkNoUpdate(commit);
 		else
 			buildNetworkUpdate(commit);
-			
 	}
 	
 	private void buildNetworkNoUpdate(String commit) {
@@ -142,7 +154,6 @@ public class NetworkBuilder
 					" Changed Method: " + changedMethod.getFirst().toString() +
 					" Calling Method: " + owner.getFirst().toString());
 		}
-		
 		
 		return edges;
 		
