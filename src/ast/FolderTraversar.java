@@ -36,7 +36,6 @@ public class FolderTraversar
 		}
 	}
 	
-	private String indent = "";
 	private File originalFileObject;
 	private File fileObject;
 	private List<String> filePaths;
@@ -86,7 +85,6 @@ public class FolderTraversar
 					{
 						dir = dirname;
 					}
-					
 				}
 			}
 			else // Class files only need absolute path to the jar because ast doesn't care 
@@ -131,6 +129,7 @@ public class FolderTraversar
 			 }
 			 
 			 out.newLine();
+			 out.newLine();
 			 out.write(Resources.sourcepath);
 			 for(String javadir : javaDirs)
 			 {
@@ -154,7 +153,6 @@ public class FolderTraversar
 	{
 		if (fileObject.isDirectory())
 		{
-			indent = getIndent(fileObject);
 			File allFiles[] = fileObject.listFiles(new JavaFilter());
 			
 			for (File aFile : allFiles)
@@ -167,31 +165,5 @@ public class FolderTraversar
 		{
 			filePaths.add(fileObject.getAbsolutePath());
 		}
-	}
- 
-	/**
-	 * Get a list of subdirectories
-	 * @param fileObject
-	 * @return
-	 */
-	private String getIndent(File fileObject)
-	{
-		String original = originalFileObject.getAbsolutePath();
-		String fileStr = fileObject.getAbsolutePath();
-		
-		String subString = fileStr.substring(original.length(),	fileStr.length());
-		
-		String indent = "";
-		
-		// get the indent per folder
-		for (int index = 0; index < subString.length(); index++)
-		{
-			char aChar = subString.charAt(index);
-			if (aChar == File.separatorChar)
-			{
-				indent = indent + " ";
-			}
-		}
-		return indent;
 	}
 }
