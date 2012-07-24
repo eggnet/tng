@@ -1,6 +1,8 @@
 --ClassFolders
-
+home/jordan/Documents/testproject/src/binary
 --SourceFolders
-/home/jordan/Documents/.git
-/home/jordan/Documents/testproject/src
+/home/jordan/Documents/testproject/src/views
+/home/jordan/Documents/testproject/src/pak
 /home/jordan/Documents/testproject/src/test
+/home/jordan/Documents/testproject/src/models
+/home/jordan/Documents/testproject/src

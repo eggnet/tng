@@ -26,6 +26,9 @@ public class CallGraphGenerator
 		// Set the repo to the commit
 		gc.reset(commitID);
 		
+		// Set up the config file
+		
+		
 		// Get all the files
 		List<String> files = gc.getAllFiles();
 		

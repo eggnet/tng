@@ -40,10 +40,11 @@ public class NetworkBuilder
 		
 		HEAD = gc.getHead();
 		
+		/*
 		List<String> commits = gc.getAllCommits();
 		for(String commit: commits) {
 			System.out.println(commit);
-		}
+		}*/
 	}
 	
 	public void buildAllNetworksNoUpdate() {
