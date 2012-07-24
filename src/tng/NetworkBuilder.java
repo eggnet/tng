@@ -103,7 +103,7 @@ public class NetworkBuilder
 		
 		// Get the commit diff
 		System.out.println("Diffing...");
-		List<Changeset> changeset = udp.parse(gc.getCommitDiff(commit));
+		List<Changeset> changeset = udp.parse(gc.getCommitDiffJavaOnly(commit, gc.getAllFiles()));
 		
 		// Get author of commit
 		String author = gc.getAuthorOfCommit(commit);
