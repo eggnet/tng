@@ -1,5 +1,6 @@
 package tng;
 
+import java.io.File;
 import java.util.List;
 
 import models.Method;
@@ -8,6 +9,7 @@ import models.Pair;
 import git.GitController;
 import db.DatabaseConnector;
 import ast.CallGraphGenerator;
+import ast.FolderTraversar;
 
 
 public class Main
@@ -22,6 +24,11 @@ public class Main
 			}
 			else {
 				try  {
+					// test for foldertraversal
+					String folderPath = "C:\\Users\\Infiro\\testproject\\src";
+					FolderTraversar traversal = new FolderTraversar(new File(folderPath));
+					traversal.traverse();
+					
 					// Set up the resources
 					Resources.dbName = args[0];
 					Resources.repository = args[1];
