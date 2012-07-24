@@ -19,7 +19,7 @@ public class Main
 		System.out.println();
 		try {
 			if (args.length < 4 ) {
-				System.out.println("Retry: TNG [dbname] [repository] [branch] [configFile]");
+				System.out.println("Retry: TNG [dbname] [repository] [branch] [configFile] <commitFile>");
 				throw new ArrayIndexOutOfBoundsException();
 			}
 			else {
@@ -43,8 +43,11 @@ public class Main
 					db.createDatabase("tng");
 					
 					NetworkBuilder nb = new NetworkBuilder(db);
-					nb.buildAllNetworksNoUpdate();
-					//nb.buildNetwork("809d8a783abb0058875fbc1bff45bc08054a27ea", false);
+					
+					if(args.length == 5)
+						nb.buildNetworksFromCommitFile(args[4]);
+					else
+						nb.buildAllNetworksNoUpdate();
 					
 					db.close();
 				} 
