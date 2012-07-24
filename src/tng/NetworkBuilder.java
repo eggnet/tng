@@ -39,6 +39,11 @@ public class NetworkBuilder
 		cgg = new CallGraphGenerator(db);
 		
 		HEAD = gc.getHead();
+		
+		List<String> commits = gc.getAllCommits();
+		for(String commit: commits) {
+			System.out.println(commit);
+		}
 	}
 	
 	public void buildAllNetworksNoUpdate() {
@@ -79,6 +84,8 @@ public class NetworkBuilder
 			buildNetworkNoUpdate(commit);
 		else
 			buildNetworkUpdate(commit);
+		
+		System.out.println();
 	}
 	
 	private void buildNetworkNoUpdate(String commit) {

@@ -24,11 +24,6 @@ public class Main
 			}
 			else {
 				try  {
-					// test for foldertraversal
-					String folderPath = "C:\\Users\\Infiro\\testproject\\src";
-					FolderTraversar traversal = new FolderTraversar(new File(folderPath));
-					traversal.traverse();
-					
 					// Set up the resources
 					Resources.dbName = args[0];
 					Resources.repository = args[1];
