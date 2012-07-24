@@ -103,8 +103,6 @@ public class FolderTraversar
 				if(lastSlashIndex != -1)
 				{
 					String directory = filePath.substring(0, lastSlashIndex);
-					if(directory.startsWith(File.separator))
-						directory = directory.substring(File.separator.length());
 					jarDirs.add(directory);
 				}
 			}
