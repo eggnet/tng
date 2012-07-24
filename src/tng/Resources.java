@@ -31,5 +31,5 @@ public class Resources
 	
 	// Git blame regex
 	//71a4479b (<jordan.ell7@gmail.com> 2012-07-18 15:08:52 -0700   3) import java.io.
-	public static final String gitBlame = ".*\\(\\<(.*)\\>.*[0-9]+\\).*";
+	public static final String gitBlame = "\\<(.+?)\\>";
 }

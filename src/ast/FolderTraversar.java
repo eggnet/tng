@@ -155,7 +155,6 @@ public class FolderTraversar
 		if (fileObject.isDirectory())
 		{
 			indent = getIndent(fileObject);
-			System.out.println(indent + fileObject.getName());
 			File allFiles[] = fileObject.listFiles(new JavaFilter());
 			
 			for (File aFile : allFiles)
@@ -167,7 +166,6 @@ public class FolderTraversar
 		if (fileObject.isFile())
 		{
 			filePaths.add(fileObject.getAbsolutePath());
-			System.out.println(indent + " " + fileObject.getName());
 		}
 	}
  

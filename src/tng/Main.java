@@ -31,14 +31,9 @@ public class Main
 					Resources.configFile = args[3];
 					setRepositoryName(args[1]);
 					
-					// test for foldertraversal
-					FolderTraversar traversal = new FolderTraversar(new File(Resources.repository));
-					traversal.traverse();
-					
-					
 					DatabaseConnector db = new DatabaseConnector();
 					db.connect("eggnet");
-					db.createDatabase("tng");
+					db.createDatabase(Resources.dbName);
 					
 					NetworkBuilder nb = new NetworkBuilder(db);
 					

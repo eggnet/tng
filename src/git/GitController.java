@@ -104,7 +104,7 @@ public class GitController
 	 * @return
 	 */
 	public String getHead() {
-		String output = spawner.spawnProcess(new String[] {"git", "show", "HEAD"});
+		String output = spawner.spawnProcess(new String[] {"git", "rev-parse", "HEAD"});
 		String[] lines = output.split(System.getProperty("line.separator"));
 		
 		Pattern pattern = Pattern.compile(Resources.gitLogCommit);

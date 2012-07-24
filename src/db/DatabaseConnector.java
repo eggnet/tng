@@ -190,6 +190,7 @@ public class DatabaseConnector extends DbConnection
 		
 		PreparedStatementExecutionItem ei = new PreparedStatementExecutionItem(query, params);
 		addExecutionItem(ei);
+		ei.waitUntilExecuted();
 	}
 	
 	/**
@@ -245,6 +246,12 @@ public class DatabaseConnector extends DbConnection
 				pair.setSecond((Math.min(end, pair.getFirst().getEnd()) - 
 						Math.max(start, pair.getFirst().getStart()) + 1)/
 						(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1));
+				if((Math.min(end, pair.getFirst().getEnd()) - 
+						Math.max(start, pair.getFirst().getStart()) + 1)/
+						(float)(pair.getFirst().getEnd() - pair.getFirst().getStart() + 1) > 1.0f) {
+					int x = 0;
+					x = x + x;
+				}
 				
 				// Add new pair to list
 				changedMethods.add(pair);

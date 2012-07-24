@@ -48,6 +48,7 @@ public class NetworkBuilder
 	}
 	
 	public void buildAllNetworksNoUpdate() {
+		System.out.println("Collecting all commit data...");
 		List<String> commits = gc.getAllCommits();
 		for(String commit: commits)
 			buildNetwork(commit, false);
@@ -97,9 +98,11 @@ public class NetworkBuilder
 		db.deleteCallGraph();
 		
 		// Create the new call graph
+		System.out.println("Creating the call graph");
 		cgg.createCallGraphAtCommit(commit);
 		
 		// Get the commit diff
+		System.out.println("Diffing...");
 		List<Changeset> changeset = udp.parse(gc.getCommitDiff(commit));
 		
 		// Get author of commit
@@ -109,6 +112,7 @@ public class NetworkBuilder
 		List<Pair<Method, Float>> changedMethods = getMethodsOfChangeset(changeset);
 		
 		// Create edges
+		System.out.println("Generating edges");
 		for(Pair<Method, Float> changedMethod: changedMethods) {
 			generateEdges(changedMethod, author);
 		}
@@ -146,7 +150,7 @@ public class NetworkBuilder
 			for(Pair<Method, Float> method: changedMethods) {
 				if(method.getFirst().getStart() == change.getFirst().getStart() && 
 						method.getFirst().getEnd() == change.getFirst().getEnd()) {
-					method.setSecond(method.getSecond() + change.getSecond());
+					method.setSecond(Math.min(method.getSecond() + change.getSecond(), 1.0f));
 					inserted = true;
 					break;
 				}

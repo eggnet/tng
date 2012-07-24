@@ -1,5 +1,6 @@
 package ast;
 
+import java.io.File;
 import java.util.List;
 
 import db.DatabaseConnector;
@@ -27,7 +28,8 @@ public class CallGraphGenerator
 		gc.reset(commitID);
 		
 		// Set up the config file
-		
+		FolderTraversar traversal = new FolderTraversar(new File(Resources.repository));
+		traversal.traverse();
 		
 		// Get all the files
 		List<String> files = gc.getAllFiles();
