@@ -24,10 +24,7 @@ public class Main
 			}
 			else {
 				try  {
-					// test for foldertraversal
-					String folderPath = "C:\\Users\\Infiro\\testproject\\src";
-					FolderTraversar traversal = new FolderTraversar(new File(folderPath));
-					traversal.traverse();
+
 					
 					// Set up the resources
 					Resources.dbName = args[0];
@@ -35,6 +32,11 @@ public class Main
 					Resources.branch = args[2];
 					Resources.configFile = args[3];
 					setRepositoryName(args[1]);
+					
+					// test for foldertraversal
+					FolderTraversar traversal = new FolderTraversar(new File(Resources.repository));
+					traversal.traverse();
+					
 					
 					DatabaseConnector db = new DatabaseConnector();
 					db.connect("eggnet");
