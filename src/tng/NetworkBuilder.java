@@ -1,5 +1,9 @@
 package tng;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +45,29 @@ public class NetworkBuilder
 		List<String> commits = gc.getAllCommits();
 		for(String commit: commits)
 			buildNetwork(commit, false);
+		
+		// Reset to head
+		gc.reset(HEAD);
+	}
+	
+	/**
+	 * This method reads a list of commits from a given file and
+	 * builds their networks accordingly.
+	 * @param commitFile
+	 */
+	public void buildNetworksFromCommitFile(String commitFile) {
+		try {
+			FileInputStream fstream = new FileInputStream(commitFile);
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String line;
+			while((line = br.readLine()) != null) {
+				buildNetwork(line, false);
+			}
+		}
+		catch(Exception e) {
+			
+		}
 		
 		// Reset to head
 		gc.reset(HEAD);

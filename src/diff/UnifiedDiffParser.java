@@ -37,6 +37,7 @@ public class UnifiedDiffParser
 	
 	private List<Changeset> parseUnifiedDiff() {
 		List<Changeset> changes = new ArrayList<Changeset>();
+		this.currentChangeset = null;
 		
 		String[] lines = unifiedDiff.split(System.getProperty("line.separator"));
 		for(int i = 0; i < lines.length; i++) {
