@@ -37,8 +37,8 @@ public class Main
 					setRepositoryName(args[1]);
 					
 					DatabaseConnector db = new DatabaseConnector();
-					db.connect("tng");
-					//db.createDatabase("tng");
+					db.connect("eggnet");
+					db.createDatabase("tng");
 					
 					NetworkBuilder nb = new NetworkBuilder(db);
 					nb.buildAllNetworksNoUpdate();

@@ -6,6 +6,7 @@ import java.util.List;
 import models.Changeset;
 import models.Edge;
 import models.Method;
+import models.Network;
 import models.Node;
 import models.Owner;
 import models.Pair;
@@ -24,6 +25,8 @@ public class NetworkBuilder
 	private CallGraphGenerator 	cgg;
 	
 	private String				HEAD;
+	
+	private Network				currentNetwork;
 	
 	public NetworkBuilder(DatabaseConnector db) {
 		this.db = db;
@@ -52,6 +55,9 @@ public class NetworkBuilder
 	}
 	
 	private void buildNetworkNoUpdate(String commit) {
+		// Create new network
+		currentNetwork = new Network();
+		
 		// Clean the database
 		db.deleteCallGraph();
 		
@@ -71,6 +77,8 @@ public class NetworkBuilder
 		for(Pair<Method, Float> changedMethod: changedMethods) {
 			generateEdges(changedMethod, author);
 		}
+		
+		db.exportNetwork(currentNetwork);
 	}
 	
 	private void buildNetworkUpdate(String commit) {
@@ -153,6 +161,8 @@ public class NetworkBuilder
 					" Weight: " + edge.getWeight() +
 					" Changed Method: " + changedMethod.getFirst().toString() +
 					" Calling Method: " + owner.getFirst().toString());
+			
+			currentNetwork.addEdge(edge);
 		}
 		
 		return edges;
