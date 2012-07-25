@@ -120,12 +120,11 @@ public class GitController
 		String output = spawner.spawnProcess(new String[] {"git", "rev-parse", "HEAD"});
 		String[] lines = output.split(System.getProperty("line.separator"));
 		
-		Pattern pattern = Pattern.compile(Resources.gitLogCommit);
+		Pattern pattern = Pattern.compile(Resources.gitHead);
 		Matcher matcher = pattern.matcher(lines[0]);
 		
 		if(matcher.find()) {
-			String[] split = lines[0].split(" ");
-			return split[1];
+			return lines[0];
 		}
 		
 		return null;

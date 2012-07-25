@@ -26,6 +26,9 @@ public class Resources
 	// Git log regex
 	public static final String gitLogCommit = "commit [a-z0-9]+";
 	
+	// Git HEAD regex
+	public static final String gitHead = "[a-z0-9]+";
+	
 	// Database
 	public static final String eggnetDB = "eggnet";
 	

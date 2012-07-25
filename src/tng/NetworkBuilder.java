@@ -42,8 +42,10 @@ public class NetworkBuilder
 		
 		/*
 		List<String> commits = gc.getAllCommits();
-		for(String commit: commits) {
-			System.out.println(commit);
+		for (int i = 0; i < commits.size(); i++) {
+			if(i%390 == 0)
+				System.out.println(" BREAK UP RIGHT HERE ");
+			System.out.println(commits.get(i));
 		}*/
 	}
 	
@@ -68,7 +70,7 @@ public class NetworkBuilder
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String line;
-			while((line = br.readLine()) != null) {
+			while((line = br.readLine()) != null && !line.isEmpty()) {
 				buildNetwork(line, false);
 			}
 		}
