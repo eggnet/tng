@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import models.CallGraph;
+
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -80,7 +82,7 @@ public class Parser
 	 * Parsers a given file using the ASTParser.
 	 * @param file
 	 */
-	public void parseFile(String file, DatabaseConnector db) {
+	public void parseFile(String file, CallGraph cg) {
 		// Create parse for JRE 1.0 - 1.6
 		ASTParser parser= ASTParser.newParser(AST.JLS3);
 
@@ -111,7 +113,7 @@ public class Parser
 
 		
 		// Visit the syntax tree
-		Visitor visitor = new Visitor(unitName, unit, db);
+		Visitor visitor = new Visitor(unitName, unit, cg);
 		unit.accept(visitor);
 	}
 	

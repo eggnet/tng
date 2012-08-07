@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Stack;
 
+import models.CallGraph;
 import models.Method;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -20,15 +21,15 @@ import db.DatabaseConnector;
 
 public class Visitor extends ASTVisitor {
 	
-	private Stack<Integer> methodStack;
+	private Stack<Method> methodStack;
 	private String file;
 	CompilationUnit cu;
-	DatabaseConnector db;
+	CallGraph cg;
 	
-	public Visitor(String file, CompilationUnit cu, DatabaseConnector db) {
-		methodStack = new Stack<Integer>();
+	public Visitor(String file, CompilationUnit cu, CallGraph cg) {
+		methodStack = new Stack<Method>();
 		this.file = file;
-		this.db = db;
+		this.cg = cg;
 		this.cu = cu;
 	}
 	
@@ -44,11 +45,10 @@ public class Visitor extends ASTVisitor {
 		
 		if(method != null) {
 			// Insert
-			int id = db.insertMethod(method);
+			cg.addMethod(method);
 
 			// Push onto stack
-			if(id != -1)
-				methodStack.push(id);
+			methodStack.push(method);
 		}
 		
 		return super.visit(node);
@@ -76,9 +76,9 @@ public class Visitor extends ASTVisitor {
 		
 		// Insert
 		if(method != null) {
-			int id = db.insertMethod(method);
+			cg.addMethod(method);
 			if(!methodStack.isEmpty())
-				db.insertInvokes(methodStack.peek(), id);
+				cg.addInvokes(methodStack.peek(), method);
 		}
 		
 		return super.visit(node);
@@ -96,9 +96,9 @@ public class Visitor extends ASTVisitor {
 		
 		// Insert
 		if(method != null) {
-			int id = db.insertMethod(method);
+			cg.addMethod(method);
 			if(!methodStack.isEmpty())
-				db.insertInvokes(methodStack.peek(), id);
+				cg.addInvokes(methodStack.peek(), method);
 		}
 		
 		return super.visit(node);

@@ -1,11 +1,9 @@
 --ClassFolders
-/home/jordan/Documents/agilefant/lib
+/home/jordan/Documents/testproject/src/binary
 
 --SourceFolders
-/home/jordan/Documents/agilefant/src/fi/hut/soberit
-/home/jordan/Documents/agilefant/src/fi
-/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/web
-/home/jordan/Documents/agilefant/src
-/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant
-/home/jordan/Documents/agilefant/src/fi/hut/soberit/agilefant/model
-/home/jordan/Documents/agilefant/src/fi/hut
+/home/jordan/Documents/testproject/src/views
+/home/jordan/Documents/testproject/src/pak
+/home/jordan/Documents/testproject/src/test
+/home/jordan/Documents/testproject/src/models
+/home/jordan/Documents/testproject/src

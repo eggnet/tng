@@ -3,6 +3,8 @@ package ast;
 import java.io.File;
 import java.util.List;
 
+import models.CallGraph;
+
 import db.DatabaseConnector;
 
 import tng.Resources;
@@ -23,7 +25,7 @@ public class CallGraphGenerator
 	 * Creates a new call graph in the database from scratch.
 	 * @param commitID
 	 */
-	public void createCallGraphAtCommit(String commitID) {
+	public void createCallGraphAtCommit(String commitID, CallGraph cg) {
 		// Set the repo to the commit
 		gc.reset(commitID);
 		
@@ -37,7 +39,7 @@ public class CallGraphGenerator
 		// Parse each file
 		for(String file: files) {
 			Parser parser = new Parser(Resources.configFile);
-			parser.parseFile(fileFullPath(file), db);
+			parser.parseFile(fileFullPath(file), cg);
 		}
 	}
 	

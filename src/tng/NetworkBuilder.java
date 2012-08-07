@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.CallGraph;
 import models.Changeset;
 import models.Edge;
 import models.Method;
@@ -28,6 +29,8 @@ public class NetworkBuilder
 	private UnifiedDiffParser 	udp;
 	private CallGraphGenerator 	cgg;
 	
+	private CallGraph			cg;
+	
 	private String				HEAD;
 	
 	private Network				currentNetwork;
@@ -37,16 +40,9 @@ public class NetworkBuilder
 		gc = new GitController();
 		udp = new UnifiedDiffParser();
 		cgg = new CallGraphGenerator(db);
+		cg = new CallGraph();
 		
 		HEAD = gc.getHead();
-		
-		/*
-		List<String> commits = gc.getAllCommits();
-		for (int i = 0; i < commits.size(); i++) {
-			if(i%390 == 0)
-				System.out.println(" BREAK UP RIGHT HERE ");
-			System.out.println(commits.get(i));
-		}*/
 	}
 	
 	public void buildAllNetworksNoUpdate() {
@@ -95,13 +91,15 @@ public class NetworkBuilder
 	private void buildNetworkNoUpdate(String commit) {
 		// Create new network
 		currentNetwork = new Network();
+		currentNetwork.setCommit(commit);
 		
-		// Clean the database
-		db.deleteCallGraph();
+		// Clean the call graph
+		cg = null;
+		cg = new CallGraph();
 		
 		// Create the new call graph
 		System.out.println("Creating the call graph");
-		cgg.createCallGraphAtCommit(commit);
+		cgg.createCallGraphAtCommit(commit, cg);
 		
 		// Get the commit diff
 		System.out.println("Diffing...");
@@ -130,7 +128,7 @@ public class NetworkBuilder
 		List<Pair<Method, Float>> changedMethods = new ArrayList<Pair<Method, Float>>();
 		for(Changeset changeset: changesets) {
 			for(Range range: changeset.getRanges()) {
-				updateChangedMethods(changedMethods, db.getChangedMethods(changeset.getNewFile(), 
+				updateChangedMethods(changedMethods, cg.getChangedMethods(changeset.getNewFile(), 
 						range.getStart(), range.getEnd()));
 			}
 		}
@@ -163,7 +161,7 @@ public class NetworkBuilder
 	}
 	
 	private List<Method> getCallers(Pair<Method, Float> method) {
-			return db.getCallersOfMethod((Method)method.getFirst());
+			return cg.getCallersOfMethod((Method)method.getFirst());
 	}
 	
 	private List<Pair<Method, Owner>> blameCallers(List<Method> methods) {
