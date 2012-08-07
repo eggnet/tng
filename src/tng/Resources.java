@@ -1,6 +1,6 @@
 package tng;
 
-public class Resources
+public class Resources extends db.Resources
 {
 	// Command line arguments
 	public static String dbName;

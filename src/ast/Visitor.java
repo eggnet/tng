@@ -42,12 +42,14 @@ public class Visitor extends ASTVisitor {
 		IMethodBinding methodBinding = node.resolveBinding();
 		Method method = createMethodFromBinding(node, methodBinding);
 		
-		// Insert
-		int id = db.insertMethod(method);
-		
-		// Push onto stack
-		if(id != -1)
-			methodStack.push(id);
+		if(method != null) {
+			// Insert
+			int id = db.insertMethod(method);
+
+			// Push onto stack
+			if(id != -1)
+				methodStack.push(id);
+		}
 		
 		return super.visit(node);
 	}
@@ -58,7 +60,8 @@ public class Visitor extends ASTVisitor {
 	 */
 	@Override
 	public void endVisit(MethodDeclaration node) {
-		methodStack.pop();
+		if(!methodStack.isEmpty())
+			methodStack.pop();
 	}
 	
 	/**

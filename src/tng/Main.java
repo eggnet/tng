@@ -19,7 +19,7 @@ public class Main
 		System.out.println();
 		try {
 			if (args.length < 4 ) {
-				System.out.println("Retry: TNG [dbname] [repository] [branch] [configFile] <commitFile>");
+				System.out.println("Retry: TNG [dbname] [repository] [branch] [configFile] <commitFile> <port>");
 				throw new ArrayIndexOutOfBoundsException();
 			}
 			else {
@@ -30,6 +30,13 @@ public class Main
 					Resources.branch = args[2];
 					Resources.configFile = args[3];
 					setRepositoryName(args[1]);
+					
+					// Set up custom port number
+					if(args.length == 6) {
+						Resources.dbPort = args[5];
+					}
+					Resources.dbUrl = Resources.dbUrl + Resources.dbPort + "/";
+					System.out.println(Resources.dbUrl);
 					
 					DatabaseConnector db = new DatabaseConnector();
 					db.connect("eggnet");
