@@ -32,7 +32,7 @@ public class Main
 					setRepositoryName(args[1]);
 					
 					// Set up custom port number
-					if(args.length == 6) {
+					if(args.length >= 6) {
 						Resources.dbPort = args[5];
 					}
 					Resources.dbUrl = Resources.dbUrl + Resources.dbPort + "/";
@@ -44,7 +44,7 @@ public class Main
 					
 					NetworkBuilder nb = new NetworkBuilder(db);
 					
-					if(args.length == 5)
+					if(args.length >= 5)
 						nb.buildNetworksFromCommitFile(args[4]);
 					else
 						nb.buildAllNetworksNoUpdate();
